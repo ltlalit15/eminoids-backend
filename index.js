@@ -40,7 +40,7 @@ app.set('views', path.join(__dirname, 'views')); // Ensure correct path to views
 const server = http.createServer(app); // wrap express app with http server
 const io = socketIo(server, {
   cors: {
-    origin: '*', // Allow all origins for development
+    origin: 'http://localhost:5173, https://pm-2.netlify.app', // Allow all origins for development
     methods: ['GET', 'POST', 'PUT', 'DELETE']
   }
 });
