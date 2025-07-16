@@ -1,38 +1,22 @@
-// local mysql
+// live server
 
 const mysql = require('mysql2/promise');
 
 const db = mysql.createPool({
-    host: '127.0.0.1',
-    port: 3306,
-    user: 'root',
-    password: '',
-    database: 'eminoids',
-    multipleStatements: true
+    host: 'nozomi.proxy.rlwy.net',        // ✅ Remote host from CLI
+    port: 48488,                           // ✅ Port from CLI
+    user: 'root',                          // ✅ Username
+    password: 'IgqaBOnvVntHIquaIjMjvATrnuEuRZSz',  // ✅ Password
+    database: 'railway',                  // ✅ Database name
+    multipleStatements: true              // Optional, allows running multiple queries
 });
 
- 
-
-console.warn('Connected');
+console.warn('✅ Connected to Railway MySQL');
 
 module.exports = db;
 
 
-// live server
 
-// const mysql = require('mysql2/promise');
 
-// const db = mysql.createPool({
-//     host: 'shuttle.proxy.rlwy.net',   // Updated host
-//     port: 32074,                      // Updated port
-//     user: 'root',                     // User
-//     password: 'zkfLLtwLtzgONVIHWnOHNpnfMAGeuIeL', // Updated password
-//     database: 'railway',              // Database name
-//     multipleStatements: true         // Allow multiple SQL statements
-// });
-
-// console.warn('Connected to Railway MySQL Database');
-
-// module.exports = db;
 
 
