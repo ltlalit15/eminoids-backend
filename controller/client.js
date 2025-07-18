@@ -9,7 +9,7 @@ const nodemailer = require('nodemailer');
 
 
 
-const addClient = async (req, res) => {
+const addClients = async (req, res) => {
   const { clientName } = req.body;
 
   try {
@@ -55,4 +55,4 @@ const getAllClients = async (req, res) => {
 
 
 
-module.exports = { addTasks, getAllTasks };
+module.exports = { addClients, getAllClients };
