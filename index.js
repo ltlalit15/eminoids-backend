@@ -30,7 +30,8 @@ const subscriptionRoutes = require('./routes/subscriptionRoutes');
 const groupChatRoutes = require('./routes/groupChatRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const serviceCategoryRoutes = require('./routes/serviceCategoryRoutes');
-const clientRoutes = require('./routes/clientRoutes);
+const clientRoutes = require('./routes/clientRoutes');
+
 
 
 const db = require('./config');
