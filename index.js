@@ -30,7 +30,7 @@ const subscriptionRoutes = require('./routes/subscriptionRoutes');
 const groupChatRoutes = require('./routes/groupChatRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const serviceCategoryRoutes = require('./routes/serviceCategoryRoutes');
-const clientsRoutes = require('./routes/clientsRoutes);
+const clientRoutes = require('./routes/clientRoutes);
 
 
 const db = require('./config');
@@ -117,7 +117,7 @@ app.use('/api/taskGym', taskGymRoutes);
 app.use('/api/adminDashboard', adminDashboardRoutes);
 app.use('/api/group', groupRoutes);
 app.use('/api/tasks', tasksRoutes);
-app.use('/api/clients', clientsRoutes);
+app.use('/api/client', clientRoutes);
 app.use('/api/projectsStatusReport', projectsStatusReportRoutes);
 app.use('/api/application', applicationRoutes);
 app.use('/api/project', projectRoutes);
