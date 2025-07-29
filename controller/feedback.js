@@ -173,4 +173,34 @@ const getProjectStatusReport = async (req, res) => {
 
 
 
-module.exports = {addFeedback, getAllFeedback, getFeedbackById, updateFeedback, deleteFeedback, getProjectStatusReport}
+const getFeedbackLog = async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        f.id,
+        p.projectTitle AS project,
+        DATE_FORMAT(f.createdAt, '%Y-%m-%d') AS date,
+        f.feedbackDetails AS feedback,
+        m.fullName AS accountable,
+        u.fullName AS manager,
+        f.resolution
+      FROM feedback f
+      LEFT JOIN projects p ON f.projectId = p.id
+      LEFT JOIN members m ON f.memberId = m.id
+      LEFT JOIN users u ON f.userId = u.id
+     
+    `);
+
+    res.status(200).json({
+      status: true,
+      data: rows
+    });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+
+
+
+module.exports = {addFeedback, getAllFeedback, getFeedbackById, updateFeedback, deleteFeedback, getProjectStatusReport, getFeedbackLog}
