@@ -29,7 +29,9 @@ const getActivityLogs = async (req, res) => {
         logs.activity,
         logs.module,
         logs.ipAddress,
-        logs.deviceBrowser
+        logs.deviceBrowser,
+        logs.action,
+        logs.status
       FROM activitylogs logs
       JOIN members m ON logs.memberId = m.id
       LIMIT 10
