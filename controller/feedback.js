@@ -204,37 +204,46 @@ const getFeedbackLog = async (req, res) => {
 
 const getTeamPerformance = async (req, res) => {
   try {
-    // 1. Get all active members
+    // Step 1: Get all active members
     const [members] = await db.query(`
       SELECT id, empId, fullName, role, team
       FROM members
       WHERE status = 'active'
     `);
 
-    // 2. Get total and completed tasks per member
+    // Step 2: Get task breakdown from assigned_projects
     const [taskStats] = await db.query(`
       SELECT memberId,
              COUNT(*) AS totalTasks,
-             SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) AS completedTasks
+             SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) AS completedTasks,
+             SUM(CASE WHEN status = 'In Progress' THEN 1 ELSE 0 END) AS inProgressTasks,
+             SUM(CASE WHEN status = 'Active' THEN 1 ELSE 0 END) AS activeTasks
       FROM assigned_projects
       GROUP BY memberId
     `);
 
-    // 3. Create map of stats per member
+    // Step 3: Create map
     const statsMap = {};
-    taskStats.forEach(({ memberId, totalTasks, completedTasks }) => {
-      statsMap[memberId] = { totalTasks, completedTasks };
+    taskStats.forEach(row => {
+      statsMap[row.memberId] = row;
     });
 
-    // 4. Build final result with performance logic
+    // Step 4: Combine and calculate percentages
     const result = members.map(member => {
-      const stats = statsMap[member.id] || { totalTasks: 0, completedTasks: 0 };
-      const { totalTasks, completedTasks } = stats;
+      const stats = statsMap[member.id] || {
+        totalTasks: 0,
+        completedTasks: 0,
+        inProgressTasks: 0,
+        activeTasks: 0,
+      };
 
-      let completionRate = 0;
-      if (totalTasks > 0) {
-        completionRate = (completedTasks / totalTasks) * 100;
-      }
+      const { totalTasks, completedTasks, inProgressTasks, activeTasks } = stats;
+
+      const percent = (n) => (totalTasks > 0 ? Math.round((n / totalTasks) * 100) : 0);
+
+      const completionRate = percent(completedTasks);
+      const inProgressRate = percent(inProgressTasks);
+      const activeRate = percent(activeTasks);
 
       let performanceTag = "Average Performer";
       if (completionRate >= 90) {
@@ -249,17 +258,22 @@ const getTeamPerformance = async (req, res) => {
         ...member,
         totalTasks,
         completedTasks,
-        completionRate: `${Math.round(completionRate)}%`,
+        inProgressTasks,
+        activeTasks,
+        completionRate: `${completionRate}%`,
+        inProgressRate: `${inProgressRate}%`,
+        activeRate: `${activeRate}%`,
         performanceTag,
       };
     });
 
     res.json({ status: true, data: result });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error in getTeamPerformance:", error);
     res.status(500).json({ status: false, message: error.message });
   }
 };
+
 
 
 
