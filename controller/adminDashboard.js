@@ -13,7 +13,7 @@ const getAdminDashboardData = async (req, res) => {
   try {
     // Active Projects
     const [activeProjectsList] = await db.query(`
-      SELECT id, name, status, deadline 
+      SELECT * 
       FROM projects 
       WHERE status = 'Active'
     `);
@@ -21,7 +21,7 @@ const getAdminDashboardData = async (req, res) => {
 
     // Near Due Projects (due in next 2 days)
     const [nearDueList] = await db.query(`
-      SELECT id, name, status, deadline 
+      SELECT * 
       FROM projects 
       WHERE status = 'Active' 
       AND DATEDIFF(deadline, CURDATE()) BETWEEN 0 AND 2
@@ -30,14 +30,14 @@ const getAdminDashboardData = async (req, res) => {
 
     // Overdue Projects
     const [overdueList] = await db.query(`
-      SELECT id, name, status, deadline 
+      SELECT * 
       FROM projects 
       WHERE status = 'Active' 
       AND deadline < CURDATE()
     `);
     const overdueCount = overdueList.length;
 
-    // Team On-Duty
+    // Team On-Duty (assuming all members are on duty)
     const [onDutyList] = await db.query(`
       SELECT id, fullName, role, team 
       FROM members
@@ -46,7 +46,7 @@ const getAdminDashboardData = async (req, res) => {
 
     // Events Today
     const [eventsTodayList] = await db.query(`
-      SELECT id, title, eventDate, location 
+      SELECT * 
       FROM events 
       WHERE DATE(eventDate) = CURDATE()
     `);
