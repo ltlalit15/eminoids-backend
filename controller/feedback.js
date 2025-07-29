@@ -161,7 +161,7 @@ const getProjectStatusReport = async (req, res) => {
         p.priority,
         p.qcDueDate
       FROM projects p
-      LEFT JOIN assigned_projects ap ON ap.projectName = p.projectTitle
+      LEFT JOIN assigned_projects ap ON ap.projectName = p.id
       LEFT JOIN members m ON p.projectManagerId = m.id
     `);
 
