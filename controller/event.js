@@ -117,25 +117,25 @@ const getEventSummary = async (req, res) => {
       });
     }
 
-    // Fetch all events for the month and year
     const [events] = await db.query(
       `SELECT * FROM events WHERE MONTH(eventDate) = ? AND YEAR(eventDate) = ?`,
       [month, year]
     );
 
-    // Normalize event type
-    const normalizeType = (type = '') => type.trim().toLowerCase();
+    // Normalize both casing and spacing
+    const normalizeType = (type = '') =>
+      type.trim().toLowerCase().replace(/\s+/g, '');
 
     const birthdays = events
       .filter(e => normalizeType(e.eventType) === 'birthday')
       .map(e => ({ name: e.details, date: e.eventDate }));
 
     const companyHolidays = events
-      .filter(e => normalizeType(e.eventType) === 'company holiday')
+      .filter(e => normalizeType(e.eventType) === 'companyholiday')
       .map(e => ({ title: e.details, date: e.eventDate }));
 
     const joiningDates = events
-      .filter(e => normalizeType(e.eventType) === 'joining date')
+      .filter(e => normalizeType(e.eventType) === 'joiningdate')
       .map(e => ({ name: e.details, date: e.eventDate }));
 
     const approvedLeaves = events
@@ -164,6 +164,7 @@ const getEventSummary = async (req, res) => {
     res.status(500).json({ status: false, message: error.message });
   }
 };
+
 
 
 
