@@ -157,7 +157,6 @@ const getProjectStatusReport = async (req, res) => {
         p.id,
         p.projectTitle,
         m.fullName AS owner,
-        p.progress,
         p.status,
         p.priority,
         p.qcDueDate
