@@ -12,51 +12,70 @@ const cloudinary = require('cloudinary').v2;
 const getAdminDashboardData = async (req, res) => {
   try {
     // Active Projects
-    const [activeProjects] = await db.query(`
-      SELECT COUNT(*) AS count 
+    const [activeProjectsList] = await db.query(`
+      SELECT id, name, status, deadline 
       FROM projects 
       WHERE status = 'Active'
     `);
+    const activeProjectsCount = activeProjectsList.length;
 
-    // Near Due (projects due in next 2 days)
-    const [nearDue] = await db.query(`
-      SELECT COUNT(*) AS count 
+    // Near Due Projects (due in next 2 days)
+    const [nearDueList] = await db.query(`
+      SELECT id, name, status, deadline 
       FROM projects 
       WHERE status = 'Active' 
       AND DATEDIFF(deadline, CURDATE()) BETWEEN 0 AND 2
     `);
+    const nearDueCount = nearDueList.length;
 
     // Overdue Projects
-    const [overdue] = await db.query(`
-      SELECT COUNT(*) AS count 
+    const [overdueList] = await db.query(`
+      SELECT id, name, status, deadline 
       FROM projects 
       WHERE status = 'Active' 
       AND deadline < CURDATE()
     `);
+    const overdueCount = overdueList.length;
 
-    // Team On-Duty (assuming all members are on duty — adjust logic if needed)
-    const [onDuty] = await db.query(`
-      SELECT COUNT(*) AS count 
+    // Team On-Duty
+    const [onDutyList] = await db.query(`
+      SELECT id, fullName, role, team 
       FROM members
     `);
+    const onDutyCount = onDutyList.length;
 
-    // Events Today (correct table: `events`)
-    const [eventsToday] = await db.query(`
-      SELECT COUNT(*) AS count 
+    // Events Today
+    const [eventsTodayList] = await db.query(`
+      SELECT id, title, eventDate, location 
       FROM events 
       WHERE DATE(eventDate) = CURDATE()
     `);
+    const eventsTodayCount = eventsTodayList.length;
 
     res.status(200).json({
       status: true,
       message: 'Admin dashboard data fetched successfully',
       data: {
-        activeProjects: activeProjects[0].count,
-        nearDue: nearDue[0].count,
-        overdue: overdue[0].count,
-        onDuty: onDuty[0].count,
-        eventsToday: eventsToday[0].count,
-        //pendingApproval: 0 // approval table not present, so 0 or remove as needed
+        activeProjects: {
+          count: activeProjectsCount,
+          list: activeProjectsList
+        },
+        nearDue: {
+          count: nearDueCount,
+          list: nearDueList
+        },
+        overdue: {
+          count: overdueCount,
+          list: overdueList
+        },
+        onDuty: {
+          count: onDutyCount,
+          list: onDutyList
+        },
+        eventsToday: {
+          count: eventsTodayCount,
+          list: eventsTodayList
+        }
       }
     });
 
@@ -65,6 +84,7 @@ const getAdminDashboardData = async (req, res) => {
     res.status(500).json({ status: false, message: error.message });
   }
 };
+
 
 module.exports = { getAdminDashboardData };
 
