@@ -150,5 +150,28 @@ const deleteFeedback = async (req, res) => {
 };
 
 
+const getProjectStatusReport = async (req, res) => {
+  try {
+    const [rows] = await db.query(`
+      SELECT 
+        p.id,
+        p.projectTitle,
+        m.fullName AS owner,
+        p.progress,
+        p.status,
+        p.priority,
+        p.qcDueDate
+      FROM projects p
+      LEFT JOIN members m ON p.ownerId = m.id
+      
+    `);
+
+    res.status(200).json({ status: true, message: "Reterived data", data: rows });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+
 
 module.exports = {addFeedback, getAllFeedback, getFeedbackById, updateFeedback, deleteFeedback}
