@@ -30,6 +30,7 @@ const subscriptionRoutes = require('./routes/subscriptionRoutes');
 const groupChatRoutes = require('./routes/groupChatRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const clientRoutes = require('./routes/clientRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
 
 
 
@@ -130,6 +131,7 @@ app.use('/api/language', languageRoutes);
 app.use('/api/subscription', subscriptionRoutes);
 app.use('/api/groupChat', groupChatRoutes);
 app.use('/api/service', serviceRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 
 
