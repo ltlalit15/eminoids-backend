@@ -174,4 +174,4 @@ const getProjectStatusReport = async (req, res) => {
 
 
 
-module.exports = {addFeedback, getAllFeedback, getFeedbackById, updateFeedback, deleteFeedback}
+module.exports = {addFeedback, getAllFeedback, getFeedbackById, updateFeedback, deleteFeedback, getProjectStatusReport}
