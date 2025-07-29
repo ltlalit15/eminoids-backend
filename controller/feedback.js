@@ -267,7 +267,7 @@ const getTeamPerformance = async (req, res) => {
       };
     });
 
-    res.json({ status: true, message, "Reterived data", data: result });
+    res.json({ status: true, message: "Reterived data", data: result });
   } catch (error) {
     console.error("Error in getTeamPerformance:", error);
     res.status(500).json({ status: false, message: error.message });
