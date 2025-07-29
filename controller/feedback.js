@@ -204,48 +204,53 @@ const getFeedbackLog = async (req, res) => {
 
 const getTeamPerformance = async (req, res) => {
   try {
+    // Step 1: Get all active members
     const [members] = await db.query(`
       SELECT id, empId, fullName, role, team
       FROM members
       WHERE status = 'active'
     `);
 
-    // Add mock performance data for now
-    const performanceData = {
-      "1": { completedTasks: 48, onTime: "92%", netHours: "160h", activeHours: "145h", qaFailed: 0 },
-      "2": { completedTasks: 42, onTime: "88%", netHours: "155h", activeHours: "135h", qaFailed: 0 },
-      "3": { completedTasks: 35, onTime: "85%", netHours: "140h", activeHours: "120h", qaFailed: 2 },
-      "4": { completedTasks: 38, onTime: "90%", netHours: "150h", activeHours: "125h", qaFailed: null },
-      "5": { completedTasks: 30, onTime: "78%", netHours: "135h", activeHours: "112h", qaFailed: null },
-    };
+    // Step 2: Get completed task counts from assigned_projects
+    const [taskCounts] = await db.query(`
+      SELECT memberId, COUNT(*) AS completedTasks
+      FROM assigned_projects
+      WHERE status = 'completed'
+      GROUP BY memberId
+    `);
 
+    // Step 3: Create a map from memberId to completedTasks
+    const taskMap = Object.fromEntries(
+      taskCounts.map(row => [row.memberId, row.completedTasks])
+    );
+
+    // Step 4: Combine and calculate performance tag
     const result = members.map(member => {
-      const perf = performanceData[member.empId] || {};
-      const performanceTag =
-        perf.qaFailed === 0 && parseInt(perf.onTime) >= 90
-          ? "Top Performer"
-          : perf.qaFailed === 0
-          ? "High Performer"
-          : perf.qaFailed > 1
-          ? "Good Performer"
-          : "Average Performer";
+      const completedTasks = taskMap[member.id] || 0;
+
+      let performanceTag = "Average Performer";
+      if (completedTasks >= 40) {
+        performanceTag = "Top Performer";
+      } else if (completedTasks >= 30) {
+        performanceTag = "High Performer";
+      } else if (completedTasks >= 20) {
+        performanceTag = "Good Performer";
+      }
 
       return {
         ...member,
-        completedTasks: perf.completedTasks || 0,
-        onTimePercent: perf.onTime || "0%",
-        netLoggedHours: perf.netHours || "0h",
-        taskActiveHours: perf.activeHours || "0h",
-        qaFailed: perf.qaFailed ?? "-",
+        completedTasks,
         performanceTag,
       };
     });
 
-    res.json(result);
+    res.json({ status: true, data: result });
   } catch (error) {
+    console.error("Error:", error);
     res.status(500).json({ status: false, message: error.message });
   }
 };
+
 
 
 
