@@ -182,7 +182,7 @@ const getFeedbackLog = async (req, res) => {
         DATE_FORMAT(f.createdAt, '%Y-%m-%d') AS date,
         f.feedbackDetails AS feedback,
         m.fullName AS accountable,
-        u.fullName AS manager,
+        u.role AS manager,
         f.resolution
       FROM feedback f
       LEFT JOIN projects p ON f.projectId = p.id
