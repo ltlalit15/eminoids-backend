@@ -155,17 +155,17 @@ const getProjectStatusReport = async (req, res) => {
     const [rows] = await db.query(`
       SELECT 
         p.id,
-        ap.projectName,
+        p.projectTitle,
         m.fullName AS owner,
         p.status,
         p.priority,
         p.qcDueDate
       FROM projects p
-      LEFT JOIN assigned_projects ap ON ap.projectName = p.id
       LEFT JOIN members m ON p.projectManagerId = m.id
+      
     `);
 
-    res.status(200).json({ status: true, message: "Retrieved data", data: rows });
+    res.status(200).json({ status: true, message: "Reterived data", data: rows });
   } catch (error) {
     res.status(500).json({ status: false, message: error.message });
   }
