@@ -193,6 +193,7 @@ const getFeedbackLog = async (req, res) => {
 
     res.status(200).json({
       status: true,
+      message: "Reterived Data",
       data: rows
     });
   } catch (error) {
