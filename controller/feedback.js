@@ -204,42 +204,52 @@ const getFeedbackLog = async (req, res) => {
 
 const getTeamPerformance = async (req, res) => {
   try {
-    // Step 1: Get all active members
+    // 1. Get all active members
     const [members] = await db.query(`
       SELECT id, empId, fullName, role, team
       FROM members
       WHERE status = 'active'
     `);
 
-    // Step 2: Get completed task counts from assigned_projects
-    const [taskCounts] = await db.query(`
-      SELECT memberId, COUNT(*) AS completedTasks
+    // 2. Get total and completed tasks per member
+    const [taskStats] = await db.query(`
+      SELECT memberId,
+             COUNT(*) AS totalTasks,
+             SUM(CASE WHEN status = 'Completed' THEN 1 ELSE 0 END) AS completedTasks
       FROM assigned_projects
-      WHERE status = 'completed'
       GROUP BY memberId
     `);
 
-    // Step 3: Create a map from memberId to completedTasks
-    const taskMap = Object.fromEntries(
-      taskCounts.map(row => [row.memberId, row.completedTasks])
-    );
+    // 3. Create map of stats per member
+    const statsMap = {};
+    taskStats.forEach(({ memberId, totalTasks, completedTasks }) => {
+      statsMap[memberId] = { totalTasks, completedTasks };
+    });
 
-    // Step 4: Combine and calculate performance tag
+    // 4. Build final result with performance logic
     const result = members.map(member => {
-      const completedTasks = taskMap[member.id] || 0;
+      const stats = statsMap[member.id] || { totalTasks: 0, completedTasks: 0 };
+      const { totalTasks, completedTasks } = stats;
+
+      let completionRate = 0;
+      if (totalTasks > 0) {
+        completionRate = (completedTasks / totalTasks) * 100;
+      }
 
       let performanceTag = "Average Performer";
-      if (completedTasks >= 40) {
+      if (completionRate >= 90) {
         performanceTag = "Top Performer";
-      } else if (completedTasks >= 30) {
+      } else if (completionRate >= 70) {
         performanceTag = "High Performer";
-      } else if (completedTasks >= 20) {
+      } else if (completionRate >= 50) {
         performanceTag = "Good Performer";
       }
 
       return {
         ...member,
+        totalTasks,
         completedTasks,
+        completionRate: `${Math.round(completionRate)}%`,
         performanceTag,
       };
     });
@@ -250,6 +260,7 @@ const getTeamPerformance = async (req, res) => {
     res.status(500).json({ status: false, message: error.message });
   }
 };
+
 
 
 
