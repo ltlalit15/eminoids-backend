@@ -377,7 +377,7 @@ const login = async (req, res) => {
         const token = jwt.sign(
             { id: user[0].id, email: user[0].email,  role: user[0].role },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '4h' }
         );
 
         // Prepare response data (including password)
