@@ -1,5 +1,5 @@
 const express = require('express');
-const { addFeedback, getAllFeedback, getFeedbackById, updateFeedback, deleteFeedback, getProjectStatusReport, getFeedbackLog } = require('../controller/feedback');
+const { addFeedback, getAllFeedback, getFeedbackById, updateFeedback, deleteFeedback, getProjectStatusReport, getFeedbackLog, getTeamPerformance } = require('../controller/feedback');
 const authMiddleware = require('../middleware/authMiddleware');
 const multer = require('multer');
 const path = require('path');
@@ -14,6 +14,7 @@ router.patch('/updateFeedback/:id', authMiddleware, updateFeedback);
 router.delete('/deleteFeedback/:id', authMiddleware, deleteFeedback);
 router.get('/getProjectStatusReport', authMiddleware, getProjectStatusReport);
 router.get('/getFeedbackLog', authMiddleware, getFeedbackLog);
+router.get('/getTeamPerformance', authMiddleware, getTeamPerformance);
 
 
 
