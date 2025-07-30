@@ -20,7 +20,8 @@ const getProjectStatusReport = async (req, res) => {
         m.fullName AS owner,
         p.status,
         p.deadline,
-        p.qcHrs
+        p.qcHrs,
+        p.priority
            
       FROM projects p
       JOIN members m ON p.projectManagerId = m.id
