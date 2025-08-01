@@ -36,7 +36,7 @@ const createGroup = async (req, res) => {
 
   const getAllGroups = async (req, res) => {
   try {
-    const [rows] = await db.query(`SELECT * FROM groups`);
+    const [rows] = await db.query(`SELECT * FROM \`groups\``);
     res.status(200).json({
       status: true,
       message: 'Groups fetched successfully',
