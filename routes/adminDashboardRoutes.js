@@ -20,7 +20,7 @@ const upload = multer({ storage: storage });
 const router = express.Router();
 
 
-router.get('/getAdminDashboardData', authMiddleware, getAdminDashboardData);
+router.get('/getAdminDashboardData', getAdminDashboardData);
 
 
 
