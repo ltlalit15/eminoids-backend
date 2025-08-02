@@ -51,8 +51,56 @@ const getAllTasks = async (req, res) => {
 };
 
 
+const updateTaskById = async (req, res) => {
+  const { id } = req.params;
+  const { taskName } = req.body;
+
+  try {
+    await db.query(
+      `UPDATE tasks SET taskName = ? WHERE id = ?`,
+      [taskName, id]
+    );
+
+    const [rows] = await db.query(`SELECT * FROM tasks WHERE id = ?`, [id]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ status: false, message: "Task not found" });
+    }
+
+    res.status(200).json({
+      status: true,
+      message: "Task updated successfully",
+      task: rows[0]
+    });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+const deleteTaskById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [result] = await db.query(
+      `DELETE FROM tasks WHERE id = ?`,
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ status: false, message: "Task not found or already deleted" });
+    }
+
+    res.status(200).json({
+      status: true,
+      message: "Task deleted successfully"
+    });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
 
 
 
 
-module.exports = { addTasks, getAllTasks };
+
+module.exports = { addTasks, getAllTasks, updateTaskById, deleteTaskById };
