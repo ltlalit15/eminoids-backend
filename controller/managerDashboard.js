@@ -72,21 +72,18 @@ const getManagerDashboardData = async (req, res) => {
       ORDER BY deadline ASC
     `, [memberId]);
 
-    // Events created today by this member (correct usage)
+    // Events for today (without createdBy filter)
     const [eventsTodayCount] = await db.query(`
       SELECT COUNT(*) AS count 
       FROM events 
-      WHERE DATE(eventDate) = CURDATE() 
-      AND createdAt = ?
-    `, [memberId]);
+      WHERE DATE(eventDate) = CURDATE()
+    `);
 
     const [eventsToday] = await db.query(`
       SELECT * 
       FROM events 
-      WHERE DATE(eventDate) = CURDATE() 
-      AND createdAt = ?
-      
-    `, [memberId]);
+      WHERE DATE(eventDate) = CURDATE()
+    `);
 
     // Final response
     res.status(200).json({
@@ -114,6 +111,7 @@ const getManagerDashboardData = async (req, res) => {
     res.status(500).json({ status: false, message: error.message });
   }
 };
+
 
 
 
