@@ -58,6 +58,56 @@ const getAllApplication = async (req, res) => {
 };
 
 
-module.exports = { addApplication, getAllApplication };
+
+const updateApplicationById = async (req, res) => {
+  const { id } = req.params;
+  const { applicationName } = req.body;
+
+  try {
+    await db.query(
+      `UPDATE application SET applicationName = ? WHERE id = ?`,
+      [applicationName, id]
+    );
+
+    const [rows] = await db.query(`SELECT * FROM application WHERE id = ?`, [id]);
+
+    if (rows.length === 0) {
+      return res.status(404).json({ status: false, message: "Application not found" });
+    }
+
+    res.status(200).json({
+      status: true,
+      message: "Application updated successfully",
+      application: rows[0]
+    });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+const deleteApplicationById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const [result] = await db.query(
+      `DELETE FROM application WHERE id = ?`,
+      [id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ status: false, message: "Application not found or already deleted" });
+    }
+
+    res.status(200).json({
+      status: true,
+      message: "Application deleted successfully"
+    });
+  } catch (error) {
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
+
+
+module.exports = { addApplication, getAllApplication, updateApplicationById, deleteApplicationById };
 
 
