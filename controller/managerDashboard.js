@@ -10,7 +10,7 @@ const cloudinary = require('cloudinary').v2;
 
 
 const getManagerDashboardData = async (req, res) => {
-  const { memberId } = req.params;  // URL से memberId लेंगे
+  const { memberId } = req.params;
 
   try {
     // Total Projects
@@ -72,7 +72,7 @@ const getManagerDashboardData = async (req, res) => {
       ORDER BY deadline ASC
     `, [memberId]);
 
-    // Optional: Events आज वाले
+    // Events created today by this member (correct usage)
     const [eventsTodayCount] = await db.query(`
       SELECT COUNT(*) AS count 
       FROM events 
@@ -85,7 +85,7 @@ const getManagerDashboardData = async (req, res) => {
       FROM events 
       WHERE DATE(eventDate) = CURDATE() 
       AND createdAt = ?
-      ORDER BY eventDate ASC
+      
     `, [memberId]);
 
     // Final response
@@ -114,6 +114,7 @@ const getManagerDashboardData = async (req, res) => {
     res.status(500).json({ status: false, message: error.message });
   }
 };
+
 
 
 
