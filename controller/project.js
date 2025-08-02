@@ -275,6 +275,28 @@ const getFilteredProjects = async (req, res) => {
   }
 };
 
+const getProjectsByManagerId = async (req, res) => {
+  const { projectManagerId } = req.params;
+
+  try {
+    const [projects] = await db.query(
+      `SELECT * FROM projects WHERE projectManagerId = ?`,
+      [projectManagerId]
+    );
+
+    res.status(200).json({
+      status: true,
+      message: "Projects fetched successfully",
+      total: projects.length,
+      projects: projects
+    });
+  } catch (error) {
+    console.error('Error fetching projects by managerId:', error);
+    res.status(500).json({ status: false, message: error.message });
+  }
+};
 
 
-module.exports = { addProject, getAllProjects, getProjectById, updateProject, deleteProject, getProjectsByStatus, getFilteredProjects };
+
+
+module.exports = { addProject, getAllProjects, getProjectById, updateProject, deleteProject, getProjectsByStatus, getFilteredProjects, getProjectsByManagerId };
