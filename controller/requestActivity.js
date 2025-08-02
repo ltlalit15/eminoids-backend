@@ -120,6 +120,35 @@ const updateRequestStatus = async (req, res) => {
   }
 };
 
+const getAllReviewedRequests = async (req, res) => {
+  try {
+    const [approvedRequests] = await db.query(`
+      SELECT * FROM actionrequests
+      WHERE LOWER(status) = 'approved'
+    `);
+
+    const [rejectedRequests] = await db.query(`
+      SELECT * FROM actionrequests
+      WHERE LOWER(status) = 'rejected'
+    `);
+
+    res.status(200).json({
+      status: true,
+      message: "Approved and Rejected requests fetched successfully",
+      totalApproved: approvedRequests.length,
+      totalRejected: rejectedRequests.length,
+      data: {
+        approvedRequests,
+        rejectedRequests
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching approved/rejected requests:", error);
+    res.status(500).json({ status: false, message: "Internal Server Error" });
+  }
+};
 
 
-module.exports = {addActionRequest, getPendingRequests, updateRequestStatus};
+
+
+module.exports = {addActionRequest, getPendingRequests, updateRequestStatus, getAllReviewedRequests};
