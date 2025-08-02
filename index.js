@@ -34,6 +34,7 @@ const feedbackRoutes = require('./routes/feedbackRoutes');
 const managerProjectRoutes = require('./routes/managerProjectRoutes');
 const requestActivityRoutes = require('./routes/requestActivityRoutes');
 const permissionRoutes = require('./routes/permissionRoutes');
+const trackingRoutes = require('./routes/trackingRoutes');
 
 
 const db = require('./config');
@@ -137,6 +138,7 @@ app.use('/api/feedback', feedbackRoutes);
 app.use('/api/managerProject', managerProjectRoutes);
 app.use('/api/requestActivity', requestActivityRoutes);
 app.use('/api/permission', permissionRoutes);
+app.use('/api/tracking', trackingRoutes);
 
 
 
