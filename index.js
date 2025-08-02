@@ -32,6 +32,7 @@ const serviceRoutes = require('./routes/serviceRoutes');
 const clientRoutes = require('./routes/clientRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const managerProjectRoutes = require('./routes/managerProjectRoutes');
+const requestActivityRoutes = require('./routes/requestActivityRoutes');
 
 
 const db = require('./config');
@@ -132,7 +133,8 @@ app.use('/api/subscription', subscriptionRoutes);
 app.use('/api/groupChat', groupChatRoutes);
 app.use('/api/service', serviceRoutes);
 app.use('/api/feedback', feedbackRoutes);
-app.use('/api/managerProject', managerProjectRoutes); 
+app.use('/api/managerProject', managerProjectRoutes);
+app.use('/api/requestActivity', requestActivityRoutes);
 
 
 
