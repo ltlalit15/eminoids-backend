@@ -33,6 +33,7 @@ const clientRoutes = require('./routes/clientRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const managerProjectRoutes = require('./routes/managerProjectRoutes');
 const requestActivityRoutes = require('./routes/requestActivityRoutes');
+const permissionRoutes = require('./routes/permissionRoutes');
 
 
 const db = require('./config');
@@ -135,6 +136,7 @@ app.use('/api/service', serviceRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/managerProject', managerProjectRoutes);
 app.use('/api/requestActivity', requestActivityRoutes);
+app.use('/api/permission', permissionRoutes);
 
 
 
